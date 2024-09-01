@@ -5,21 +5,23 @@ const prisma = new PrismaClient()
 export default {
 
     createUser: async (user: Omit<User, "id" | "createdAt" | "updatedAt">): Promise<User> => {
-        const newUser = await prisma.user.create({data: user})
+        const newUser = await prisma.user.create({ data: user })
         return newUser
     },
 
-    getAllUsers: async ()=> {
+    getAllUsers: async (): Promise<User[]>=> {
         const users = await prisma.user.findMany()
         return users
     },
 
-    selectUsers: ()=> {
-
-    },
-
-    selectOneUser: (id: string)=> {
-
+    getOneUserByEmail: async (email: string): Promise<User | undefined> => {
+        const userFinded = await prisma.user.findUnique({where: { email }})
+        
+        if (!userFinded){
+            return
+        }
+        
+        return userFinded
     },
 
     updateUser: (id: string, user: User)=> {

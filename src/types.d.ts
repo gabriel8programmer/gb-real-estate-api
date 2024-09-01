@@ -1,7 +1,6 @@
 
 export interface IUserDataToken {
-    id: string,
-    username: string,
-    email: string,
+    id: string
+    email: string
     role: string
 }
