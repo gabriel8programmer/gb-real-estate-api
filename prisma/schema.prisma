@@ -12,3 +12,193 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id       Int       @id @default(autoincrement())
+  name     String?   @db.VarChar(255)
+  email    String?   @db.VarChar(255)
+  password String?
+  role     UserRoles @default(CLIENT)
+  enabled  Boolean   @default(true)
+  Client   Client[]
+}
+
+model Client {
+  id             Int             @id @default(autoincrement())
+  birthDate      DateTime
+  phone          String
+  cpf            String
+  rg             String?
+  materialStatus MaterialStatus  @default(Single)
+  gender         Gender          @default(MALE)
+  userId         Int             @unique
+  user           User            @relation(fields: [userId], references: [id])
+  RentalRequest  RentalRequest[]
+  Rental         Rental[]
+}
+
+model Property {
+  id             Int            @id @default(autoincrement())
+  title          String         @db.VarChar(255)
+  description    String?
+  price          Decimal
+  size           Decimal
+  bedrooms       Int
+  bathrooms      Int
+  status         PropertyStatus
+  propertyTypeId Int
+  locationId     Int
+  propertyType   PropertyType   @relation(fields: [propertyTypeId], references: [id])
+  location       Location       @relation(fields: [locationId], references: [id])
+
+  images        PropertyImage[]
+  RentalRequest RentalRequest[]
+  Rental        Rental[]
+}
+
+model PropertyImage {
+  id         Int      @id @default(autoincrement())
+  url        String
+  propertyId Int
+  property   Property @relation(fields: [propertyId], references: [id])
+}
+
+model PropertyType {
+  id       Int        @id @default(autoincrement())
+  name     String
+  property Property[]
+}
+
+model Location {
+  id         Int        @id @default(autoincrement())
+  street     String?
+  number     String?
+  complement String?
+  city       String?
+  state      String?
+  country    String?
+  cep        String?
+  location   String?
+  property   Property[]
+}
+
+model RentalRequest {
+  clientId   Int
+  propertyId Int
+  startDate  DateTime
+  endDate    DateTime
+  status     RentalRequestStatus @default(Pending)
+
+  client   Client   @relation(fields: [clientId], references: [id])
+  property Property @relation(fields: [propertyId], references: [id])
+
+  @@id([clientId, propertyId])
+}
+
+model Rental {
+  id                 Int                  @id @default(autoincrement())
+  clientId           Int
+  propertyId         Int
+  startContractDate  DateTime
+  endContractDate    DateTime
+  contractUrl        String
+  status             RentalStatus         @default(Actived)
+  client             Client               @relation(fields: [clientId], references: [id])
+  property           Property             @relation(fields: [propertyId], references: [id])
+  Payment            Payment[]
+  MaintenanceRequest MaintenanceRequest[]
+  MaintenanceCost    MaintenanceCost[]
+}
+
+model Payment {
+  id              Int           @id @default(autoincrement())
+  total           Decimal
+  startDate       DateTime
+  maturityDate    DateTime
+  status          PaymentStatus
+  paymentMethodId Int
+  rentalId        Int
+
+  paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  rental        Rental        @relation(fields: [rentalId], references: [id])
+}
+
+model PaymentMethod {
+  id      Int       @id @default(autoincrement())
+  name    String
+  Payment Payment[]
+}
+
+model MaintenanceRequest {
+  id                  Int                      @id @default(autoincrement())
+  randomRequestNumber Int
+  description         String
+  status              MaintenanceRequestStatus
+
+  rentalId        Int
+  rental          Rental            @relation(fields: [rentalId], references: [id])
+  MaintenanceCost MaintenanceCost[]
+}
+
+model MaintenanceCost {
+  id          Int     @id @default(autoincrement())
+  description String
+  value       Decimal
+
+  maintenanceRequestId Int
+  rentalId             Int
+
+  maintenceRequest MaintenanceRequest @relation(fields: [maintenanceRequestId], references: [id])
+  rental           Rental             @relation(fields: [rentalId], references: [id])
+}
+
+// enums
+enum UserRoles {
+  ADMIN
+  AGENT
+  CLIENT
+}
+
+enum MaterialStatus {
+  Single
+  Married
+  Divorced
+  Widowed
+  Separated
+  Engaged
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum PropertyStatus {
+  Available
+  Rented
+  Under_maintenance
+}
+
+enum RentalRequestStatus {
+  Pending
+  Aproved
+  Rejected
+}
+
+enum RentalStatus {
+  Actived
+  Finished
+  Canceled
+}
+
+enum PaymentStatus {
+  Done
+  Pending
+  Processing
+}
+
+enum MaintenanceRequestStatus {
+  Pending
+  In_progress
+  Finished
+}

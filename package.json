@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node build/server.js",
-    "dev": "nodemon -e ts -x tsx watch src/server.ts"
+    "dev": "nodemon -e ts -x tsx watch src/server.ts",
+    "db:create-database": "npx prisma migrate dev --name create-tables"
   },
   "keywords": [],
   "author": "",
