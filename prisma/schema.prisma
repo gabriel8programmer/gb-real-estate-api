@@ -16,7 +16,7 @@ datasource db {
 model User {
   id       Int       @id @default(autoincrement())
   name     String?   @db.VarChar(255)
-  email    String?   @db.VarChar(255)
+  email    String?   @unique @db.VarChar(255)
   password String?
   role     UserRoles @default(CLIENT)
   enabled  Boolean   @default(true)
@@ -47,7 +47,7 @@ model Property {
   bathrooms      Int
   status         PropertyStatus
   propertyTypeId Int
-  locationId     Int
+  locationId     Int            @unique
   propertyType   PropertyType   @relation(fields: [propertyTypeId], references: [id])
   location       Location       @relation(fields: [locationId], references: [id])
 
@@ -85,6 +85,7 @@ model Location {
 model RentalRequest {
   clientId   Int
   propertyId Int
+  budget     Decimal
   startDate  DateTime
   endDate    DateTime
   status     RentalRequestStatus @default(Pending)
