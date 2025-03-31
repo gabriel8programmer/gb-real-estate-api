@@ -16,6 +16,7 @@ const authController = new AuthController(authService);
 
 router.post("/register", authController.register);
 router.post("/login", authController.login);
+router.post("/social");
 router.post("/forgot-password");
 
 export default router;

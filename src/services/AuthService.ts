@@ -7,13 +7,18 @@ export class AuthService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async registerUser(params: CreateUserParams) {
-    const { password } = params;
+    const { email, password } = params;
+
+    // verify if user's email already exists in database
+    const emailExists = await this.usersRepository.findByEmail(email);
+    if (emailExists) throw new HttpError(401, "Email is already in use!");
 
     // encrypt password
     const saltRounds = 10;
-    const encryptPassword = await bcrypt.hash(password, saltRounds);
+    const encryptedPassword = await bcrypt.hash(password, saltRounds);
+    Object.assign(params, { password: encryptedPassword });
 
-    Object.assign(params, { password: encryptPassword });
+    // send email verification
 
     return this.usersRepository.create(params);
   }
@@ -31,7 +36,6 @@ export class AuthService {
 
     // test passwrod sended in params
     const validatePassword = await bcrypt.compare(password, user.password);
-
     if (!validatePassword) throw new HttpError(400, "Invalid Credentials!");
 
     // generate jwt token

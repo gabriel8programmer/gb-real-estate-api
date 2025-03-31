@@ -14,13 +14,14 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  name     String?   @db.VarChar(255)
-  email    String?   @unique @db.VarChar(255)
-  password String?
-  role     UserRoles @default(CLIENT)
-  enabled  Boolean   @default(true)
-  Client   Client[]
+  id            Int       @id @default(autoincrement())
+  name          String?   @db.VarChar(255)
+  email         String?   @unique @db.VarChar(255)
+  password      String?
+  role          UserRoles @default(CLIENT)
+  emailVerified Boolean?  @default(false)
+  enabled       Boolean   @default(true)
+  Client        Client?
 }
 
 model Client {
@@ -31,10 +32,10 @@ model Client {
   rg             String?
   materialStatus MaterialStatus  @default(Single)
   gender         Gender          @default(MALE)
-  userId         Int             @unique
-  user           User            @relation(fields: [userId], references: [id])
   RentalRequest  RentalRequest[]
   Rental         Rental[]
+  userId         Int             @unique
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Property {
@@ -42,25 +43,24 @@ model Property {
   title          String         @db.VarChar(255)
   description    String?
   price          Decimal
-  size           Decimal
-  bedrooms       Int
-  bathrooms      Int
+  size           Decimal?
+  bedrooms       Int?
+  bathrooms      Int?
   status         PropertyStatus
-  propertyTypeId Int
-  locationId     Int            @unique
-  propertyType   PropertyType   @relation(fields: [propertyTypeId], references: [id])
-  location       Location       @relation(fields: [locationId], references: [id])
+  propertyTypeId Int?
+  propertyType   PropertyType?  @relation(fields: [propertyTypeId], references: [id], onUpdate: Cascade)
 
   images        PropertyImage[]
   RentalRequest RentalRequest[]
   Rental        Rental[]
+  Location      Location?
 }
 
 model PropertyImage {
   id         Int      @id @default(autoincrement())
   url        String
   propertyId Int
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
 model PropertyType {
@@ -70,7 +70,7 @@ model PropertyType {
 }
 
 model Location {
-  id         Int        @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   street     String?
   number     String?
   complement String?
@@ -79,7 +79,8 @@ model Location {
   country    String?
   cep        String?
   location   String?
-  property   Property[]
+  propertyId Int?      @unique
+  property   Property? @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
 model RentalRequest {
@@ -90,8 +91,8 @@ model RentalRequest {
   endDate    DateTime
   status     RentalRequestStatus @default(Pending)
 
-  client   Client   @relation(fields: [clientId], references: [id])
-  property Property @relation(fields: [propertyId], references: [id])
+  client   Client   @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([clientId, propertyId])
 }
