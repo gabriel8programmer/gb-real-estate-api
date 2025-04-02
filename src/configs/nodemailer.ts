@@ -2,7 +2,7 @@ import { createTransport } from "nodemailer";
 import { z } from "zod";
 
 const optionsSchema = z.object({
-  NODEMAILER_PORT: z.number(),
+  NODEMAILER_PORT: z.coerce.number(),
   NODEMAILER_HOST: z.string(),
   NODEMAILER_AUTH_USER: z.string(),
   NODEMAILER_AUTH_PASS: z.string(),
