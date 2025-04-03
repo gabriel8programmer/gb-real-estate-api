@@ -6,7 +6,7 @@ const router = Router();
 
 // user's model
 const usersModel = new Users();
-
+// user's controller
 const usersController = new UsersController(usersModel);
 
 router.get("/users", usersController.index);

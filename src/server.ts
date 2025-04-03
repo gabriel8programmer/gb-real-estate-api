@@ -6,6 +6,8 @@ import cors from "cors";
 // routes
 import UsersRouter from "./routes/users";
 import ClientsRouter from "./routes/clients";
+import propertiesRouter from "./routes/properties";
+import propertyTypesRouter from "./routes/propertyTypes";
 
 import { HandlerErrorsMiddleware } from "./middlewares/HandlerErrorsMiddleware";
 
@@ -15,11 +17,13 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 
-app.get("/", (req, res) => res.send("teste"));
-
 // routes
 app.use("/api", ClientsRouter);
+app.use("/api", propertiesRouter);
+
+// admins only
 app.use("/api/admin", UsersRouter);
+app.use("/api/admin", propertyTypesRouter);
 
 app.use(HandlerErrorsMiddleware);
 

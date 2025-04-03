@@ -6,8 +6,7 @@ const router = Router();
 
 // client's model
 const clientModel = new Clients();
-
-// controller
+// client's controller
 const clientsController = new ClientsController(clientModel);
 
 router.get("/clients/:id", clientsController.show);

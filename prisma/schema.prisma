@@ -21,7 +21,7 @@ model User {
   role          UserRoles @default(CLIENT)
   emailVerified Boolean   @default(false)
   enabled       Boolean   @default(true)
-  Client        Client?
+  client        Client?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -34,8 +34,8 @@ model Client {
   rg             String?
   materialStatus MaterialStatus  @default(Single)
   gender         Gender          @default(MALE)
-  RentalRequest  RentalRequest[]
-  Rental         Rental[]
+  rentalRequest  RentalRequest[]
+  rental         Rental[]
   userId         Int             @unique
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -53,9 +53,9 @@ model Property {
   propertyType   PropertyType?  @relation(fields: [propertyTypeId], references: [id], onUpdate: Cascade)
 
   images        PropertyImage[]
-  RentalRequest RentalRequest[]
-  Rental        Rental[]
-  Location      Location?
+  rentalRequest RentalRequest[]
+  rental        Rental[]
+  location      Location?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -83,7 +83,7 @@ model Location {
   state      String?
   country    String?
   cep        String?
-  location   String?
+  coords     Json?
   propertyId Int?      @unique
   property   Property? @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
@@ -115,8 +115,8 @@ model Rental {
   client             Client               @relation(fields: [clientId], references: [id])
   property           Property             @relation(fields: [propertyId], references: [id])
   Payment            Payment[]
-  MaintenanceRequest MaintenanceRequest[]
-  MaintenanceCost    MaintenanceCost[]
+  maintenanceRequest MaintenanceRequest[]
+  maintenanceCost    MaintenanceCost[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -141,7 +141,7 @@ model Payment {
 model PaymentMethod {
   id      Int       @id @default(autoincrement())
   name    String
-  Payment Payment[]
+  payment Payment[]
 }
 
 model MaintenanceRequest {
@@ -152,7 +152,7 @@ model MaintenanceRequest {
 
   rentalId        Int
   rental          Rental            @relation(fields: [rentalId], references: [id])
-  MaintenanceCost MaintenanceCost[]
+  maintenanceCost MaintenanceCost[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
