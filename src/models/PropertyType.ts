@@ -1,5 +1,5 @@
 import { PropertyType } from "@prisma/client";
-import { PropertyTypesRepository } from "./types";
+import { PropertyTypesRepository } from "./types/types";
 import { prisma } from "../database";
 
 export class PropertyTypes implements PropertyTypesRepository {

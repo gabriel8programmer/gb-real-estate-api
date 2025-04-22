@@ -4,7 +4,7 @@ import {
   PropertiesRepository,
   PropertyImage,
   PropertyLocation,
-} from "./types";
+} from "./types/types";
 import { prisma } from "../database";
 
 export class Properties implements PropertiesRepository {

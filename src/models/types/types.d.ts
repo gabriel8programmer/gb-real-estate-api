@@ -2,23 +2,6 @@ import { Client, Location, Property, PropertyType, User } from "@prisma/client";
 
 // user's interfaces
 
-export interface CreateUserParams {
-  name: string;
-  email: string;
-  password?: string;
-  role?: "ADMIN" | "AGENT" | "CLIENT";
-  emailVerified?: boolean;
-  enabled?: boolean;
-}
-
-export interface UsersRepository {
-  find: () => Promise<User[]>;
-  findById: (id: number) => Promise<User | null>;
-  create: (params: CreateUserParams) => Promise<User>;
-  updateById: (id: number, params: Partial<CreateUserParams>) => Promise<User | null>;
-  deleteById: (id: number) => Promise<User | null>;
-}
-
 // client's interfaces
 
 export type MaterialStatus =

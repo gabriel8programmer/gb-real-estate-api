@@ -1,5 +1,20 @@
 import { z } from "zod";
 
+export const UsersRequestQueryParams = z
+  .object({
+    page: z.coerce.number(),
+    pageSize: z.coerce.number(),
+    name: z.string(),
+    email: z.string(),
+    role: z.enum(["ADMIN", "AGENT", "CLIENT"]),
+    emailVerified: z.boolean(),
+    enabled: z.boolean(),
+    orderBy: z.enum(["name", "email", "createdAt"]),
+    order: z.enum(["asc", "desc"]),
+    createAt: z.coerce.date(),
+  })
+  .partial();
+
 export const CreateUsersRequestSchema = z.object({
   name: z.string(),
   email: z.string().email(),
