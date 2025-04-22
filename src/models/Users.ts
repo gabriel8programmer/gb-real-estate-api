@@ -12,6 +12,7 @@ export class Users implements UsersRepository {
       role,
       emailVerified,
       enabled,
+      createdAt,
       order = "asc",
       orderBy = "name",
     } = where;
@@ -19,7 +20,7 @@ export class Users implements UsersRepository {
     const limit = (page - 1) * pageSize;
 
     return prisma.user.findMany({
-      where: { name, email, role, emailVerified, enabled },
+      where: { name, email, role, emailVerified, enabled, createdAt },
       take: pageSize,
       skip: limit,
       orderBy: { [orderBy]: order },

@@ -1,36 +1,6 @@
-import { Client, Location, Property, PropertyType, User } from "@prisma/client";
+import { Property } from "@prisma/client";
 
-// user's interfaces
-
-// client's interfaces
-
-export type MaterialStatus =
-  | "Single"
-  | "Married"
-  | "Divorced"
-  | "Widowed"
-  | "Separated"
-  | "Engaged";
-
-export interface CreateClientParams {
-  birthDate: Date;
-  phone: string;
-  cpf: string;
-  rg?: string;
-  materialStatus?: MaterialStatus;
-  gender?: "MALE" | "FEMALE";
-  userId: number;
-}
-
-export interface ClientsRepository {
-  findById: (id: number) => Promise<Client | null>;
-  create: (params: CreateClientParams) => Promise<Client>;
-  updateById: (id: number, params: Partial<CreateClientParams>) => Promise<Client | null>;
-  deleteById: (id: number) => Promise<Client | null>;
-}
-
-// property's type interfaces
-
+// property types
 export interface PropertyTypesRepository {
   find: () => Promise<PropertyType[]>;
   create: (params: { name: string }) => Promise<PropertyType>;
@@ -58,6 +28,16 @@ export interface PropertyLocation {
   };
 }
 
+export interface PropertyWhereParams {
+  page?: number;
+  pageSize?: number;
+  type?: string;
+  price?: number;
+  //   location?: PropertyLocation;
+  orderBy?: "title" | "price" | "createdAt";
+  order?: "asc" | "desc";
+}
+
 export interface CreatePropertyParams {
   title: string;
   description?: string;
@@ -67,22 +47,20 @@ export interface CreatePropertyParams {
   bathrooms?: number;
   status: "Available" | "Rented" | "Under_maintenance";
   propertyTypeId?: number;
-  // images's list
-  images?: propertyImage[];
   // location
   location?: PropertyLocation;
 }
 
 export interface PropertiesRepository {
-  find: () => Promise<Property[]>;
+  find: (where: PropertyWhereParams) => Promise<Property[]>;
   findById: (id: number) => Promise<Property | null>;
+  count: (where: PropertyWhereParams) => Promise<number>;
   create: (params: CreatePropertyParams) => Promise<Property>;
   updateById: (
     id: number,
     params: Partial<Omit<CreatePropertyParams, "images" | "location">>
   ) => Promise<Property | null>;
   deleteById: (id: number) => Promise<Property>;
-  addImages: (propertyId: number, images: propertyImage[]) => Promise<void>;
-  removeImages: (propertyId: number, imageIds: number[]) => Promise<void>;
-  updateLocation: (propertyId: number, location: PropertyLocation) => Promise<Location | null>;
+  addImage: (propertyId: number, url: string) => Promise<void>;
+  removeImage: (propertyId: number, imageId: number) => Promise<void>;
 }

@@ -1,12 +1,9 @@
 import { Handler } from "express";
-import { Users } from "../models/Users";
 import {
   CreateUsersRequestSchema,
   UpdateUsersRequestSchema,
   UsersRequestQueryParams,
 } from "./schemas/UsersRequestSchema";
-import { HttpError } from "../errors/HttpError";
-import bcrypt from "bcrypt";
 import { UserServices } from "../services/UserServices";
 
 export class UsersController {
@@ -22,63 +19,44 @@ export class UsersController {
     }
   };
 
-  // show: Handler = async (req, res, next) => {
-  //   try {
-  //     const id = +req.params.id;
-  //     const user = await this.userServices.findById(id);
-  //     if (!user) throw new HttpError(404, "User not found!");
+  show: Handler = async (req, res, next) => {
+    try {
+      const id = +req.params.id;
+      const user = await this.userServices.getUserById(id);
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  };
 
-  //     res.json(user);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
+  save: Handler = async (req, res, next) => {
+    try {
+      const body = CreateUsersRequestSchema.parse(req.body);
+      const newUser = await this.userServices.createUser(body);
+      res.status(201).json({ newUser });
+    } catch (error) {
+      next(error);
+    }
+  };
 
-  // save: Handler = async (req, res, next) => {
-  //   try {
-  //     const body = CreateUsersRequestSchema.parse(req.body);
+  update: Handler = async (req, res, next) => {
+    try {
+      const id = +req.params.id;
+      const body = UpdateUsersRequestSchema.parse(req.body);
+      const updatedUser = await this.userServices.updateUserById(id, body);
+      res.json(updatedUser);
+    } catch (error) {
+      next(error);
+    }
+  };
 
-  //     if (body.password) {
-  //       const encryptedPassword = await bcrypt.hash(body.password, 10);
-  //       Object.assign(body, { password: encryptedPassword });
-  //     }
-
-  //     const newUser = await this.userServices.create(body);
-  //     res.status(201).json({ newUser });
-  //     res.json(newUser);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
-
-  // update: Handler = async (req, res, next) => {
-  //   try {
-  //     const id = +req.params.id;
-  //     const body = UpdateUsersRequestSchema.parse(req.body);
-
-  //     if (body.password) {
-  //       const encryptedPassword = await bcrypt.hash(body.password, 10);
-  //       Object.assign(body, { password: encryptedPassword });
-  //     }
-
-  //     const updatedUser = await this.userServices.updateById(id, body);
-  //     if (!updatedUser) throw new HttpError(404, "User not found!");
-
-  //     res.json(updatedUser);
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
-
-  // delete: Handler = async (req, res, next) => {
-  //   try {
-  //     const id = +req.params.id;
-  //     const deletedUser = await this.userServices.deleteById(id);
-  //     if (!deletedUser) throw new HttpError(404, "User not found!");
-
-  //     res.json({ deletedUser });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
+  delete: Handler = async (req, res, next) => {
+    try {
+      const id = +req.params.id;
+      const deletedUser = await this.userServices.deleteUserById(id);
+      res.json({ deletedUser });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

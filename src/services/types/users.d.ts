@@ -10,3 +10,10 @@ export interface UsersPaginated {
   enabled?: boolean;
   createdAt?: Date;
 }
+
+export interface CreateUserParams {
+  name: string;
+  email: string;
+  password?: string;
+  role?: "ADMIN" | "AGENT" | "CLIENT";
+}

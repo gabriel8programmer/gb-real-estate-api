@@ -7,8 +7,8 @@ export const UsersRequestQueryParams = z
     name: z.string(),
     email: z.string(),
     role: z.enum(["ADMIN", "AGENT", "CLIENT"]),
-    emailVerified: z.boolean(),
-    enabled: z.boolean(),
+    emailVerified: z.coerce.boolean(),
+    enabled: z.coerce.boolean(),
     orderBy: z.enum(["name", "email", "createdAt"]),
     order: z.enum(["asc", "desc"]),
     createAt: z.coerce.date(),
@@ -20,8 +20,8 @@ export const CreateUsersRequestSchema = z.object({
   email: z.string().email(),
   password: z.string().optional(),
   role: z.enum(["ADMIN", "AGENT", "CLIENT"]).optional(),
-  enabled: z.boolean().optional(),
   emailVerified: z.boolean().optional(),
+  enabled: z.boolean().optional(),
 });
 
 export const UpdateUsersRequestSchema = CreateUsersRequestSchema.partial();

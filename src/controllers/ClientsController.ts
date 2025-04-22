@@ -1,13 +1,13 @@
 import { Handler } from "express";
-import { Clients } from "../models/Clients";
 import { CreateClientRequestSchema } from "./schemas/ClientsRequestSchema";
+import { ClientServices } from "../services/ClientServices";
 
 export class ClientsController {
-  constructor(private readonly clientsModel: Clients) {}
+  constructor(private readonly clientServices: ClientServices) {}
 
   show: Handler = async (req, res, next) => {
     try {
-      const client = await this.clientsModel.findById(+req.params.id);
+      const client = await this.clientServices.getClientById(+req.params.id);
       res.json(client);
     } catch (error) {
       next(error);
@@ -17,7 +17,7 @@ export class ClientsController {
   save: Handler = async (req, res, next) => {
     try {
       const body = CreateClientRequestSchema.parse(req.body);
-      const newClient = await this.clientsModel.create(body);
+      const newClient = await this.clientServices.createClient(body);
       res.status(201).json({ newClient });
     } catch (error) {
       next(error);
@@ -28,7 +28,7 @@ export class ClientsController {
     try {
       const id = +req.params.id;
       const body = CreateClientRequestSchema.partial().parse(req.body);
-      const updatedClient = await this.clientsModel.updateById(id, body);
+      const updatedClient = await this.clientServices.updateClientById(id, body);
 
       res.json({ updatedClient });
     } catch (error) {
@@ -38,7 +38,7 @@ export class ClientsController {
 
   delete: Handler = async (req, res, next) => {
     try {
-      const deletedClient = await this.clientsModel.deleteById(+req.params.id);
+      const deletedClient = await this.clientServices.deleteClientById(+req.params.id);
       res.json({ deletedClient });
     } catch (error) {
       next(error);
