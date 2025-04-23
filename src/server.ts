@@ -8,6 +8,7 @@ import UsersRouter from "./routes/users";
 import ClientsRouter from "./routes/clients";
 import propertiesRouter from "./routes/properties";
 import propertyTypesRouter from "./routes/propertyTypes";
+import authRouter from "./routes/auth";
 
 import { HandlerErrorsMiddleware } from "./middlewares/HandlerErrorsMiddleware";
 
@@ -24,6 +25,9 @@ app.use("/api", propertiesRouter);
 // admins only
 app.use("/api/admin", UsersRouter);
 app.use("/api/admin", propertyTypesRouter);
+
+// auth routes
+app.use("/api/auth", authRouter);
 
 app.use(HandlerErrorsMiddleware);
 

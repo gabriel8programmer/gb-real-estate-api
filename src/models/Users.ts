@@ -44,6 +44,10 @@ export class Users implements UsersRepository {
     return prisma.user.findUnique({ where: { id } });
   }
 
+  async findByEmail(email: string): Promise<User | null> {
+    return prisma.user.findUnique({ where: { email } });
+  }
+
   async count(where: UserWhereParams): Promise<number> {
     const { name, email, role, emailVerified, enabled } = where;
 

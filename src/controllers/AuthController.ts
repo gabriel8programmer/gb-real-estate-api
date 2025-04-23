@@ -1,17 +1,29 @@
 import { Handler } from "express";
-import { RegisterRequestSchema } from "./schemas/AuthRequestSchema";
-import { prisma } from "../database";
+import { LoginRequestSchema, RegisterRequestSchema } from "./schemas/AuthRequestSchema";
+import { AuthServices } from "../services/AuthServices";
 
 export class AuthController {
-  static register: Handler = async (req, res, next) => {
+  constructor(private readonly authServices: AuthServices) {}
+
+  register: Handler = async (req, res, next) => {
     try {
-      const { name, email, password } = RegisterRequestSchema.parse(req.body);
-      // create user
-      const newUser = await prisma.user.create({ data: { name, email, password } });
+      const body = RegisterRequestSchema.parse(req.body);
+      // get accessToken and return with a success message
+      const accessToken = await this.authServices.registerUser(body);
+      res.json({ message: "User registered successfuly", accessToken });
     } catch (error) {
       next(error);
     }
   };
 
-  static login: Handler = async (req, res, next) => {};
+  login: Handler = async (req, res, next) => {
+    try {
+      const body = LoginRequestSchema.parse(req.body);
+      // get accessToken and return with a success message
+      const { user, accessToken } = await this.authServices.login(body);
+      res.json({ message: "User logged successfuly", user, accessToken });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

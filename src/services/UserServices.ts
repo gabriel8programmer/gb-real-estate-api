@@ -30,11 +30,21 @@ export class UserServices {
     return user;
   }
 
+  async getUserByEmail(email: string) {
+    const user = await this.usersModel.findByEmail(email);
+    if (!user) throw new HttpError(404, "User not found!");
+    return user;
+  }
+
   async createUser(params: CreateUserParams) {
     // encrypt password
     if (params.password) {
       params.password = await bcrypt.hash(params.password, 10);
     }
+
+    // validate if user already exists by your email
+    const userAlreadyExists = await this.usersModel.findByEmail(params.email);
+    if (userAlreadyExists) throw new HttpError(401, "Email address already in use!");
 
     return this.usersModel.create(params);
   }

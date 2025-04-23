@@ -13,6 +13,9 @@ import { PropertyServices } from "../../services/PropertyServices";
 import { PropertyTypesController } from "../../controllers/PropertyTypesController";
 import { PropertyTypes } from "../../models/PropertyType";
 
+import { AuthController } from "../../controllers/AuthController";
+import { AuthServices } from "../../services/AuthServices";
+
 // user's model
 export const usersModel = new Users();
 // user's services
@@ -38,3 +41,8 @@ export const propertiesModel = new Properties();
 export const propertyServices = new PropertyServices(propertiesModel);
 // property's controller
 export const propertiesController = new PropertiesController(propertyServices);
+
+// auth's services
+export const authServices = new AuthServices(usersModel);
+// auth's controller
+export const authController = new AuthController(authServices);
