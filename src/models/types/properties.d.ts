@@ -9,7 +9,6 @@ export interface PropertyTypesRepository {
 }
 
 // property's interfaces
-
 export interface PropertyImage {
   url: string;
 }
@@ -32,9 +31,12 @@ export interface PropertyWhereParams {
   page?: number;
   pageSize?: number;
   type?: string;
-  price?: number;
+  price?: {
+    min?: number;
+    max?: number;
+  };
   //   location?: PropertyLocation;
-  orderBy?: "title" | "price" | "createdAt";
+  orderBy?: "type" | "price" | "createdAt";
   order?: "asc" | "desc";
 }
 
@@ -56,10 +58,7 @@ export interface PropertiesRepository {
   findById: (id: number) => Promise<Property | null>;
   count: (where: PropertyWhereParams) => Promise<number>;
   create: (params: CreatePropertyParams) => Promise<Property>;
-  updateById: (
-    id: number,
-    params: Partial<Omit<CreatePropertyParams, "images" | "location">>
-  ) => Promise<Property | null>;
+  updateById: (id: number, params: Partial<CreatePropertyParams>) => Promise<Property | null>;
   deleteById: (id: number) => Promise<Property>;
   addImage: (propertyId: number, url: string) => Promise<void>;
   removeImage: (propertyId: number, imageId: number) => Promise<void>;

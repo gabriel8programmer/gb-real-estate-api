@@ -1,24 +1,17 @@
-import { PassThrough } from "stream";
-import { UserWhereParams } from "../models/types/users";
+import { CreateUserParams } from "../models/types/users";
 import { Users } from "../models/Users";
-import { CreateUserParams, UsersPaginated } from "./types/users";
+import { UserWhereParams } from "../models/types/users";
 import bcrypt from "bcrypt";
 import { HttpError } from "../errors/HttpError";
 
 export class UserServices {
   constructor(private readonly usersModel: Users) {}
 
-  async getUsersPaginated(params: UsersPaginated) {
-    const { page = 1, pageSize = 10, name, email } = params;
+  async getUsersPaginated(params: UserWhereParams) {
+    const { page = 1, pageSize = 10 } = params;
 
-    const where: UserWhereParams = {
-      ...params,
-      name: { contains: name },
-      email: { contains: email },
-    };
-
-    const users = await this.usersModel.find(where);
-    const total = await this.usersModel.count(where);
+    const users = await this.usersModel.find(params);
+    const total = await this.usersModel.count(params);
 
     return {
       data: users,

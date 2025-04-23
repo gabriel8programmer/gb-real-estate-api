@@ -3,20 +3,14 @@ import { User } from "@prisma/client";
 export interface UserWhereParams {
   page?: number;
   pageSize?: number;
-  name?: {
-    contains?: string;
-    equals?: string;
-  };
-  email?: {
-    contains?: string;
-    equals?: string;
-  };
+  name?: string;
+  email?: string;
   role?: "ADMIN" | "AGENT" | "CLIENT";
+  orderBy?: "name" | "email" | "createdAt";
+  order?: "asc" | "desc";
   emailVerified?: boolean;
   enabled?: boolean;
   createdAt?: Date;
-  orderBy?: "name" | "email" | "createdAt";
-  order?: "asc" | "desc";
 }
 
 export interface CreateUserParams {

@@ -16,10 +16,6 @@ export const LocationSchema = z
   })
   .partial();
 
-export const CreateImageSchema = z.object({
-  url: z.string(),
-});
-
 export const CreatePropertiesRequestSchema = z.object({
   title: z.string(),
   description: z.string().optional(),
@@ -29,10 +25,22 @@ export const CreatePropertiesRequestSchema = z.object({
   bathrooms: z.number().optional(),
   status: z.enum(["Available", "Rented", "Under_maintenance"]),
   propertyTypeId: z.number().optional(),
-  images: z.array(CreateImageSchema).optional(),
   location: LocationSchema.optional(),
 });
 
 export const AddImagesSchema = z.object({
-  images: z.array(CreateImageSchema),
+  url: z.string().url(),
 });
+
+export const PropertiesRequestQueryParams = z
+  .object({
+    page: z.coerce.number(),
+    pageSize: z.coerce.number(),
+    type: z.string(),
+    minPrice: z.coerce.number(),
+    maxPrice: z.coerce.number(),
+    orderBy: z.enum(["type", "price", "createdAt"]),
+    order: z.enum(["asc", "desc"]),
+    createdAt: z.coerce.date(),
+  })
+  .partial();

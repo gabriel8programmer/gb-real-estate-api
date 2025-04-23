@@ -20,7 +20,20 @@ export class Users implements UsersRepository {
     const limit = (page - 1) * pageSize;
 
     return prisma.user.findMany({
-      where: { name, email, role, emailVerified, enabled, createdAt },
+      where: {
+        name: {
+          contains: name,
+          mode: "insensitive",
+        },
+        email: {
+          contains: email,
+          mode: "insensitive",
+        },
+        role,
+        emailVerified,
+        enabled,
+        createdAt,
+      },
       take: pageSize,
       skip: limit,
       orderBy: { [orderBy]: order },

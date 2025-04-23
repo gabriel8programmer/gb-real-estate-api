@@ -1,13 +1,7 @@
 import { Router } from "express";
-import { PropertyTypesController } from "../controllers/PropertyTypesController";
-import { PropertyTypes } from "../models/PropertyType";
+import { typeController } from "./container";
 
 const router = Router();
-
-// model
-const typeModel = new PropertyTypes();
-// controller
-const typeController = new PropertyTypesController(typeModel);
 
 router.get("/property-types", typeController.index);
 router.post("/property-types", typeController.save);

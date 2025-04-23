@@ -8,11 +8,20 @@ import { prisma } from "../database";
 
 export class Properties implements PropertiesRepository {
   async find(where: PropertyWhereParams): Promise<Property[]> {
-    const { page = 1, pageSize = 10, orderBy = "title", order = "asc" } = where;
+    const { page = 1, pageSize = 10, type, price, orderBy = "title", order = "asc" } = where;
 
     return prisma.property.findMany({
       where: {
-        ...where,
+        price: {
+          lte: price?.max,
+          gte: price?.min,
+        },
+        propertyType: {
+          name: {
+            contains: type,
+            mode: "insensitive",
+          },
+        },
       },
       take: pageSize,
       skip: (page - 1) * pageSize,
@@ -21,11 +30,33 @@ export class Properties implements PropertiesRepository {
   }
 
   async findById(id: number): Promise<Property | null> {
-    return prisma.property.findUnique({ where: { id }, include: { images: true, location: true } });
+    return prisma.property.findUnique({
+      where: { id },
+      include: {
+        images: {
+          select: { id: true, url: true },
+        },
+        location: true,
+      },
+    });
   }
 
   async count(where: PropertyWhereParams): Promise<number> {
-    return prisma.property.count({ where });
+    const { type, price } = where;
+    return prisma.property.count({
+      where: {
+        price: {
+          lte: price?.max,
+          gte: price?.min,
+        },
+        propertyType: {
+          name: {
+            contains: type,
+            mode: "insensitive",
+          },
+        },
+      },
+    });
   }
 
   async create(params: CreatePropertyParams): Promise<Property> {
@@ -64,15 +95,6 @@ export class Properties implements PropertiesRepository {
   }
 
   async removeImage(propertyId: number, imageId: number): Promise<void> {
-    await prisma.property.update({
-      where: { id: propertyId },
-      data: {
-        images: {
-          disconnect: {
-            id: imageId,
-          },
-        },
-      },
-    });
+    await prisma.propertyImage.delete({ where: { id: imageId, propertyId } });
   }
 }
