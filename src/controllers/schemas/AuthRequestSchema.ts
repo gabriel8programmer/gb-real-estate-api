@@ -7,3 +7,9 @@ export const RegisterRequestSchema = z.object({
 });
 
 export const LoginRequestSchema = RegisterRequestSchema.pick({ email: true, password: true });
+
+export const SocialRequestSchema = z.object({
+  name: z.string(),
+  email: z.string().email("Invalid format email address!"),
+  verified_email: z.boolean(),
+});

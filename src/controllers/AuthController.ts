@@ -1,5 +1,9 @@
 import { Handler } from "express";
-import { LoginRequestSchema, RegisterRequestSchema } from "./schemas/AuthRequestSchema";
+import {
+  LoginRequestSchema,
+  RegisterRequestSchema,
+  SocialRequestSchema,
+} from "./schemas/AuthRequestSchema";
 import { AuthServices } from "../services/AuthServices";
 
 export class AuthController {
@@ -22,6 +26,17 @@ export class AuthController {
       // get accessToken and return with a success message
       const { user, accessToken } = await this.authServices.login(body);
       res.json({ message: "User logged successfuly", user, accessToken });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  google: Handler = async (req, res, next) => {
+    try {
+      const { name, email, verified_email: emailVerified } = SocialRequestSchema.parse(req.user);
+      // get response and returning json
+      const response = await this.authServices.signInSocial({ name, email, emailVerified });
+      res.json({ message: "Sign user successfuly", response });
     } catch (error) {
       next(error);
     }

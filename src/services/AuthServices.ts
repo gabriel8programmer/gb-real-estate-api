@@ -44,4 +44,34 @@ export class AuthServices {
       accessToken,
     };
   }
+
+  async signInSocial(params: { name: string; email: string; emailVerified: boolean }) {
+    // find user in database
+    const user = await this.usersModel.findByEmail(params.email);
+
+    // if user is not exists then create a new user in database
+    if (!user) {
+      // creating new user returning new accesstoken
+      await this.usersModel.create(params);
+      const payload = { email: params.email };
+      return AuthServices.getNewAccessToken(payload, AuthServices._JWT_SECRET_KEY);
+    }
+
+    // update verifiedEmail user
+    await this.usersModel.updateById(user.id, { emailVerified: params.emailVerified });
+
+    // creating payload and accesstoken and returning accesstoken with users data
+    const payload = { email: params.email };
+    const accessToken = await AuthServices.getNewAccessToken(payload, AuthServices._JWT_SECRET_KEY);
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        role: user.role,
+      },
+      accessToken,
+    };
+  }
 }
