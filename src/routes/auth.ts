@@ -7,6 +7,6 @@ const router = Router();
 router.post("/register", authController.register);
 router.post("/login", authController.login);
 // social autenticators
-router.post("/signin/google", Auth.google, authController.google); // google authentication
+router.post("/signin/google", Auth.google, authController.social); // google authentication
 
 export default router;

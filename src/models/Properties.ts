@@ -3,7 +3,7 @@ import {
   CreatePropertyParams,
   PropertiesRepository,
   PropertyWhereParams,
-} from "./types/properties";
+} from "../types/utils/properties";
 import { prisma } from "../database";
 
 export class Properties implements PropertiesRepository {

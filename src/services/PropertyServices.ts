@@ -1,7 +1,7 @@
 import { prisma } from "../database";
 import { HttpError } from "../errors/HttpError";
 import { Properties } from "../models/Properties";
-import { CreatePropertyParams, PropertyWhereParams } from "../models/types/properties";
+import { CreatePropertyParams, PropertyWhereParams } from "../types/utils/properties";
 
 export class PropertyServices {
   constructor(private readonly propertiesModel: Properties) {}

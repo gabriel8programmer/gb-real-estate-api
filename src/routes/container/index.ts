@@ -19,9 +19,9 @@ import { AuthServices } from "../../services/AuthServices";
 // user's model
 export const usersModel = new Users();
 // user's services
-export const userService = new UserServices(usersModel);
+export const userServices = new UserServices(usersModel);
 // user's controller
-export const usersController = new UsersController(userService);
+export const usersController = new UsersController(userServices);
 
 // client's model
 export const clientModel = new Clients();
@@ -43,6 +43,6 @@ export const propertyServices = new PropertyServices(propertiesModel);
 export const propertiesController = new PropertiesController(propertyServices);
 
 // auth's services
-export const authServices = new AuthServices(usersModel);
+export const authServices = new AuthServices(userServices);
 // auth's controller
 export const authController = new AuthController(authServices);

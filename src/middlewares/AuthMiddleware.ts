@@ -1,4 +1,4 @@
-import { Handler, Request } from "express";
+import { Handler } from "express";
 import { OAuth2Client } from "google-auth-library";
 import { HttpError } from "../errors/HttpError";
 
@@ -10,11 +10,11 @@ const googleClient = new OAuth2Client();
 
 export class AuthMiddleware {
   // generic method for checking google id token
-  static google: Handler = async (req: Request, res, next) => {
+  static google: Handler = async (req, res, next) => {
     try {
       // get token and validate
       const token = req.headers.authorization?.split(" ")[1];
-      if (!token) throw new HttpError(401, "Invalid Token!");
+      if (!token) throw new HttpError(401, "Token Required!");
 
       const ticket = await googleClient.verifyIdToken({
         idToken: token,
@@ -24,9 +24,12 @@ export class AuthMiddleware {
       // get payload
       const payload = ticket.getPayload();
       const expiresAt = payload?.exp;
-      const now = Date.now();
+      const expireDate = new Date((expiresAt as number) * 1000);
+      const now = new Date();
       // validate expiration token
-      if ((expiresAt as number) < now) throw new HttpError(401, "Expired token!");
+      if (expireDate < now) throw new HttpError(401, "Expired token!");
+
+      console.log(payload);
 
       // define data user
       req.user = payload;

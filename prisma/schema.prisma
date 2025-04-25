@@ -21,6 +21,7 @@ model User {
   role          UserRoles @default(CLIENT)
   emailVerified Boolean   @default(false)
   enabled       Boolean   @default(true)
+  picture       String?
   client        Client?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

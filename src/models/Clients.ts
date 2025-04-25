@@ -1,5 +1,5 @@
 import { Client } from "@prisma/client";
-import { ClientsRepository, CreateClientParams } from "./types/clients";
+import { ClientsRepository, CreateClientParams } from "../types/utils/clients";
 import { prisma } from "../database";
 
 export class Clients implements ClientsRepository {

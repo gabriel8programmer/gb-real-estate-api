@@ -1,7 +1,7 @@
 import { HttpError } from "../errors/HttpError";
 import { Clients } from "../models/Clients";
 import { Users } from "../models/Users";
-import { CreateClientParams } from "../models/types/clients";
+import { CreateClientParams } from "../types/utils/clients";
 
 export class ClientServices {
   constructor(private readonly usersModel: Users, private readonly clientsModel: Clients) {}

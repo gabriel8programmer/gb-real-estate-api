@@ -6,7 +6,6 @@ export const HandlerErrorsMiddleware: ErrorRequestHandler = (error, req, res, ne
   if (error instanceof HttpError) {
     res.status(error.status).json({ message: error.message });
   } else if (error instanceof ZodError) {
-    console.log(error.errors);
     res
       .status(400)
       .json({ name: error.name, message: error.errors.map((e) => e.message).join(".") });

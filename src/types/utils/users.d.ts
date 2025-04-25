@@ -1,11 +1,13 @@
 import { User } from "@prisma/client";
 
+export type UserRole = "ADMIN" | "AGENT" | "CLIENT";
+
 export interface UserWhereParams {
   page?: number;
   pageSize?: number;
   name?: string;
   email?: string;
-  role?: "ADMIN" | "AGENT" | "CLIENT";
+  role?: UserRole;
   orderBy?: "name" | "email" | "createdAt";
   order?: "asc" | "desc";
   emailVerified?: boolean;
@@ -17,7 +19,7 @@ export interface CreateUserParams {
   name: string;
   email: string;
   password?: string;
-  role?: "ADMIN" | "AGENT" | "CLIENT";
+  role?: UserRole;
   emailVerified?: boolean;
   enabled?: boolean;
 }

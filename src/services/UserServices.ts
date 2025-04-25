@@ -1,6 +1,6 @@
-import { CreateUserParams } from "../models/types/users";
+import { CreateUserParams } from "../types/utils/users";
 import { Users } from "../models/Users";
-import { UserWhereParams } from "../models/types/users";
+import { UserWhereParams } from "../types/utils/users";
 import bcrypt from "bcrypt";
 import { HttpError } from "../errors/HttpError";
 

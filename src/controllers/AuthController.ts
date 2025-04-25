@@ -14,7 +14,7 @@ export class AuthController {
       const body = RegisterRequestSchema.parse(req.body);
       // get accessToken and return with a success message
       const accessToken = await this.authServices.registerUser(body);
-      res.json({ message: "User registered successfuly", accessToken });
+      res.status(201).json({ message: "User registered successfuly", accessToken });
     } catch (error) {
       next(error);
     }
@@ -31,12 +31,12 @@ export class AuthController {
     }
   };
 
-  google: Handler = async (req, res, next) => {
+  social: Handler = async (req, res, next) => {
     try {
-      const { name, email, verified_email: emailVerified } = SocialRequestSchema.parse(req.user);
+      const data = SocialRequestSchema.parse(req.user);
       // get response and returning json
-      const response = await this.authServices.signInSocial({ name, email, emailVerified });
-      res.json({ message: "Sign user successfuly", response });
+      const response = await this.authServices.signInSocial(data);
+      res.json({ message: "Signin user successfuly", response });
     } catch (error) {
       next(error);
     }

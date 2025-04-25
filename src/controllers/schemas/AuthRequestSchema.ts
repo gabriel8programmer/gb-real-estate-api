@@ -11,5 +11,5 @@ export const LoginRequestSchema = RegisterRequestSchema.pick({ email: true, pass
 export const SocialRequestSchema = z.object({
   name: z.string(),
   email: z.string().email("Invalid format email address!"),
-  verified_email: z.boolean(),
+  email_verified: z.boolean().default(false),
 });

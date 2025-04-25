@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
 import { prisma } from "../database";
-import { CreateUserParams, UsersRepository, UserWhereParams } from "./types/users";
+import { CreateUserParams, UsersRepository, UserWhereParams } from "../types/utils/users";
 
 export class Users implements UsersRepository {
   async find(where: UserWhereParams): Promise<User[]> {
