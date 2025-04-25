@@ -3,7 +3,7 @@ import {
   AddImagesSchema,
   CreatePropertiesRequestSchema,
   PropertiesRequestQueryParams,
-} from "./schemas/PropertiesRequestSchema";
+} from "../types/schemas/PropertiesRequestSchema";
 import { PropertyServices } from "../services/PropertyServices";
 
 export class PropertiesController {

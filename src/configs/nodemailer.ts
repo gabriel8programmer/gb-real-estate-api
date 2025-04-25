@@ -21,3 +21,16 @@ const options = {
 };
 
 export const transporter = createTransport(options);
+
+export const sendMail = async (emailOptions: {
+  toEmail: string;
+  subject: string;
+  html: string;
+}) => {
+  await transporter.sendMail({
+    from: NODEMAILER_AUTH_USER,
+    to: emailOptions.toEmail,
+    subject: emailOptions.subject,
+    html: emailOptions.html,
+  });
+};

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Verificação</title>
+    <style>
+      * {
+        font-family: "Calibri";
+      }
+    </style>
+  </head>
+  <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4">
+    <table
+      width="100%"
+      cellspacing="0"
+      cellpadding="0"
+      style="background-color: #ffffff; border-radius: 8px; padding: 20px"
+    >
+      <tr>
+        <td>
+          <h2 style="text-align: center">Confirme seu e-mail</h2>
+          <p>Olá, <strong>{{name}}</strong>!</p>
+          <p>
+            Por favor, clique no botão abaixo para verificar seu e-mail e completar o seu registro:
+          </p>
+          <p style="text-align: center">
+            <a
+              href="{{verificationLink}}"
+              style="
+                display: inline-block;
+                background-color: #4caf50;
+                color: white;
+                padding: 14px 20px;
+                text-align: center;
+                text-decoration: none;
+                border-radius: 5px;
+                margin: 20px auto;
+                cursor: pointer;
+              "
+              >Verificar E-mail</a
+            >
+          </p>
+          <p>Se você não se registrou, ignore este e-mail.</p>
+          <p>
+            Atenciosamente,<br />
+            Gb Real Estate Corporation
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

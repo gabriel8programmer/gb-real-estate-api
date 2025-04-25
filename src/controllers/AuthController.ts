@@ -3,7 +3,7 @@ import {
   LoginRequestSchema,
   RegisterRequestSchema,
   SocialRequestSchema,
-} from "./schemas/AuthRequestSchema";
+} from "../types/schemas/AuthRequestSchema";
 import { AuthServices } from "../services/AuthServices";
 
 export class AuthController {
@@ -37,6 +37,27 @@ export class AuthController {
       // get response and returning json
       const response = await this.authServices.signInSocial(data);
       res.json({ message: "Signin user successfuly", response });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  sendMail: Handler = async (req, res, next) => {
+    try {
+      // reuse loginschema validation email
+      const { email } = LoginRequestSchema.pick({ email: true }).parse(req.body);
+      await this.authServices.sendMailVerification(email);
+      res.json({ message: "Email sended successfuly!" });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  verifyEmail: Handler = async (req, res, next) => {
+    try {
+      const { token } = req.params;
+      const dataUser = await this.authServices.verifyEmail(token);
+      res.json({ message: "Email verified successfuly!", dataUser });
     } catch (error) {
       next(error);
     }

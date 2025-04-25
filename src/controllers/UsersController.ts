@@ -3,7 +3,7 @@ import {
   CreateUsersRequestSchema,
   UpdateUsersRequestSchema,
   UsersRequestQueryParams,
-} from "./schemas/UsersRequestSchema";
+} from "../types/schemas/UsersRequestSchema";
 import { UserServices } from "../services/UserServices";
 
 export class UsersController {

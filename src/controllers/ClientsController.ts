@@ -1,5 +1,5 @@
 import { Handler } from "express";
-import { CreateClientRequestSchema } from "./schemas/ClientsRequestSchema";
+import { CreateClientRequestSchema } from "../types/schemas/ClientsRequestSchema";
 import { ClientServices } from "../services/ClientServices";
 
 export class ClientsController {
