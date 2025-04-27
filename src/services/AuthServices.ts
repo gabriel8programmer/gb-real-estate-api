@@ -7,6 +7,7 @@ import { UserServices } from "./UserServices";
 import fs from "node:fs";
 import path from "node:path";
 import { sendMail } from "../configs/nodemailer";
+import { VerifyEmailError } from "../errors/VerifyEmailError";
 
 export class AuthServices {
   private _URL_API = process.env.URL_API;
@@ -96,16 +97,25 @@ export class AuthServices {
   }
 
   async verifyEmail(validateToken: string) {
-    // validate token
-    const decodedToken = await jwt.verify(validateToken, this._JWT_SECRET_KEY);
-    if (!decodedToken) throw new HttpError(401, "Invalid Token!");
+    // get html template success
+    const responseSuccessTemplate = fs.readFileSync(
+      path.resolve("src/templates/emails/verify-email-success-template.html"),
+      { encoding: "utf8" }
+    );
 
-    // validate user, update email verified and returning some data user
-    const { id: userId } = decodedToken as jwt.JwtPayload;
-    const { id, email, emailVerified, role } = await this.userServices.updateUserById(userId, {
-      emailVerified: true,
-    });
+    // get html template error
+    const responseErrorTemplate = fs.readFileSync(
+      path.resolve("src/templates/emails/verify-email-error-template.html"),
+      { encoding: "utf8" }
+    );
 
-    return { id, email, emailVerified, role };
+    // returns html error template file if any error occurs
+    try {
+      // try verify jwt token sended
+      await jwt.verify(validateToken, this._JWT_SECRET_KEY);
+      return responseSuccessTemplate;
+    } catch (error) {
+      throw new VerifyEmailError(401, responseErrorTemplate);
+    }
   }
 }
