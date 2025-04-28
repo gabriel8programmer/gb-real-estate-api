@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { typeController } from "./container";
+import { typeController } from "../container";
 
 const router = Router();
 

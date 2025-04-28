@@ -31,6 +31,18 @@ export class AuthController {
     }
   };
 
+  resetPassword: Handler = async (req, res, next) => {
+    try {
+      const id = +req.params.id;
+      //reuse loginSchema cause it's equals login controller
+      const { password } = LoginRequestSchema.pick({ password: true }).parse(req.body);
+      const response = await this.authServices.resetPassword({ id, password });
+      res.json({ message: "Password udpated successfuly!", response });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   social: Handler = async (req, res, next) => {
     try {
       const data = SocialRequestSchema.parse(req.user);

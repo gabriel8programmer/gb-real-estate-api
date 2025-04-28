@@ -19,7 +19,7 @@ export class AuthServices {
   constructor(private readonly userServices: UserServices) {}
 
   private getNewAccessToken = async (
-    payload: { email: string; id?: number },
+    payload: { email?: string; id?: number },
     expiresAt?: string
   ) => {
     return jwt.sign(payload, this._JWT_SECRET_KEY, {
@@ -50,6 +50,13 @@ export class AuthServices {
     const payload = { email: params.email };
     const accessToken = await this.getNewAccessToken(payload);
 
+    return { user, accessToken };
+  }
+
+  async resetPassword(params: { id: number; password: string }): Promise<AuthResponse> {
+    const { id, password } = params;
+    const user = await this.userServices.updateUserById(id, { password });
+    const accessToken = await this.getNewAccessToken({ id });
     return { user, accessToken };
   }
 

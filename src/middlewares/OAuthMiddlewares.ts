@@ -1,6 +1,7 @@
 import { Handler } from "express";
 import { OAuth2Client } from "google-auth-library";
 import { HttpError } from "../errors/HttpError";
+import { EnsureIsPermittedSchema } from "../types/schemas/MiddlewareSchemas";
 
 // get enviroment token
 const CLIENT_ID_GOOGLE = process.env["AUDIENCE"];
