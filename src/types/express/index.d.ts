@@ -1,9 +1,13 @@
-import { AuthUserParams } from "../utils/auth";
+import { UserRole } from "../utils/users";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: AuthUserParams;
+      user?: {
+        id?: number;
+        email?: string;
+        role?: UserRole;
+      };
     }
   }
 }

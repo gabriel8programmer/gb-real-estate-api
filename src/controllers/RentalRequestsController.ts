@@ -1,5 +1,5 @@
 import { Handler } from "express";
-import { RentalRequestServices } from "../services/rentalRequestServices";
+import { RentalRequestServices } from "../services/RentalRequestServices";
 
 export class RentalRequestsController {
   constructor(private readonly rentalRequestServices: RentalRequestServices) {}

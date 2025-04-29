@@ -6,7 +6,6 @@ const router = Router();
 
 router.post("/register", authController.register);
 router.post("/login", authController.login);
-router.patch("/reset-password/:id", authController.resetPassword);
 // verification email routes
 router.post("/send-email-verification", authController.sendMail);
 // this route doesn't return json, only just html

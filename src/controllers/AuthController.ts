@@ -12,9 +12,14 @@ export class AuthController {
   register: Handler = async (req, res, next) => {
     try {
       const body = RegisterRequestSchema.parse(req.body);
-      // get accessToken and return with a success message
-      const accessToken = await this.authServices.registerUser(body);
-      res.status(201).json({ message: "User registered successfuly", accessToken });
+
+      // register user and return response
+      await this.authServices.registerUser(body);
+
+      res.status(201).json({
+        message: "User registered successfuly",
+        info: "A verification email has been sent. Please check your email or spam folder to be able to use our platform.",
+      });
     } catch (error) {
       next(error);
     }
@@ -26,18 +31,6 @@ export class AuthController {
       // get accessToken and return with a success message
       const { user, accessToken } = await this.authServices.login(body);
       res.json({ message: "User logged successfuly", user, accessToken });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  resetPassword: Handler = async (req, res, next) => {
-    try {
-      const id = +req.params.id;
-      //reuse loginSchema cause it's equals login controller
-      const { password } = LoginRequestSchema.pick({ password: true }).parse(req.body);
-      const response = await this.authServices.resetPassword({ id, password });
-      res.json({ message: "Password udpated successfuly!", response });
     } catch (error) {
       next(error);
     }

@@ -1,9 +1,8 @@
 import { Handler } from "express";
 import { OAuth2Client } from "google-auth-library";
 import { HttpError } from "../errors/HttpError";
-import { EnsureIsPermittedSchema } from "../types/schemas/MiddlewareSchemas";
 
-// get enviroment token
+// get enviroments consts
 const CLIENT_ID_GOOGLE = process.env["AUDIENCE"];
 
 // create google client
@@ -29,8 +28,6 @@ export class AuthMiddleware {
       const now = new Date();
       // validate expiration token
       if (expireDate < now) throw new HttpError(401, "Expired token!");
-
-      console.log(payload);
 
       // define data user
       req.user = payload;

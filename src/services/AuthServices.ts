@@ -1,9 +1,13 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { HttpError } from "../errors/HttpError";
-import { CreateUserParams } from "../types/utils/users";
-import { SignInUserParams, AuthSocialResponse, AuthResponse } from "../types/utils/auth";
-import { UserServices } from "./UserServices";
+import {
+  SignInUserParams,
+  AuthResponse,
+  AuthRegisterParams,
+  AuthLoginParams,
+} from "../types/utils/auth";
+import { Users } from "../models/Users";
 import fs from "node:fs";
 import path from "node:path";
 import { sendMail } from "../configs/nodemailer";
@@ -16,7 +20,7 @@ export class AuthServices {
   private _verifiedEmailEndpointLink = (token: string) =>
     `http://${this._URL_API}/api/auth/verify-email/${token}`;
 
-  constructor(private readonly userServices: UserServices) {}
+  constructor(private readonly usersModel: Users) {}
 
   private getNewAccessToken = async (
     payload: { email?: string; id?: number },
@@ -27,61 +31,64 @@ export class AuthServices {
     });
   };
 
+  private formatAuthUser = (user: any) => {
+    return {
+      id: user?.id,
+      email: user?.email,
+      emailVerified: user?.emailVerified,
+      role: user?.role,
+    };
+  };
+
   // common register with email and password
-  async registerUser(params: CreateUserParams): Promise<AuthResponse> {
-    // create user in database
-    const user = await this.userServices.createUser(params);
+  async registerUser(params: AuthRegisterParams) {
+    // destructuring
+    const { email, password } = params;
 
-    // creating payload and accesstoken and returning accesstoken
-    const payload = { email: params.email };
-    const accessToken = await this.getNewAccessToken(payload);
+    // encrypt password
+    params.password = await bcrypt.hash(password, 10);
 
-    return { user, accessToken };
+    // validate user
+    const userExists = await this.usersModel.findByEmail(email);
+    if (userExists) throw new HttpError(401, "User email address already in use!");
+
+    const newUser = await this.usersModel.create(params);
   }
 
   // common login with email and password
-  async login(params: { email: string; password: string }): Promise<AuthResponse> {
+  async login(params: AuthLoginParams): Promise<AuthResponse> {
+    // destructuring
+    const { email, password } = params;
+
     // validate user and password
-    const user = await this.userServices.getUserByEmail(params.email);
-    const passwordValidate = await bcrypt.compare(params.password, user?.password as string);
+    const user = await this.usersModel.findByEmail(email);
+    const passwordValidate = await bcrypt.compare(password, user?.password as string);
     if (!user || !passwordValidate) throw new HttpError(401, "Invalid credentials!");
 
     // creating payload and accesstoken and returning accesstoken with users data
-    const payload = { email: params.email };
-    const accessToken = await this.getNewAccessToken(payload);
-
-    return { user, accessToken };
-  }
-
-  async resetPassword(params: { id: number; password: string }): Promise<AuthResponse> {
-    const { id, password } = params;
-    const user = await this.userServices.updateUserById(id, { password });
-    const accessToken = await this.getNewAccessToken({ id });
-    return { user, accessToken };
+    const accessToken = await this.getNewAccessToken({ email });
+    return { user: this.formatAuthUser(user), accessToken };
   }
 
   // social login or register
-  async signInSocial(params: SignInUserParams): Promise<AuthSocialResponse> {
+  async signInSocial(params: SignInUserParams): Promise<AuthResponse> {
+    // destructuring
     const { email, name, email_verified: emailVerified } = params;
 
     // find user in database
-    const user = await this.userServices.getUserByEmail(email);
+    const user = await this.usersModel.findByEmail(email);
 
     // if user is not exists then create a new user in database
     if (!user) {
       // creating new user returning new accesstoken
-      const newUser = await this.userServices.createUser({ name, email, emailVerified });
-      const payload = { email };
-      const accessToken = await this.getNewAccessToken(payload);
-
-      return { user: newUser, accessToken };
+      const newUser = await this.usersModel.create({ name, email, emailVerified });
+      const accessToken = await this.getNewAccessToken({ email });
+      return { user: this.formatAuthUser(newUser), accessToken };
     }
 
     // creating payload and accesstoken and returning accesstoken with users data
-    const payload = { email: params.email };
-    const accessToken = await this.getNewAccessToken(payload);
-
-    return { user, accessToken };
+    const accessToken = await this.getNewAccessToken({ email });
+    return { user: this.formatAuthUser(user), accessToken };
   }
 
   async sendMailVerification(email: string) {
@@ -91,7 +98,10 @@ export class AuthServices {
     );
 
     // get user name
-    const { id, name } = await this.userServices.getUserByEmail(email);
+    const user = await this.usersModel.findByEmail(email);
+    if (!user) throw new HttpError(404, "User not found!");
+
+    const { name, id } = user;
 
     // config html template
     let html = emailTemplate.replace("{{name}}", name.split(" ")[0]);

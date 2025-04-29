@@ -1,4 +1,4 @@
-import "dotenv/config";
+import "dotenv/config"; // config dotenv
 
 import express from "express";
 import cors from "cors";
@@ -6,29 +6,27 @@ import cors from "cors";
 // routes
 import UsersRouter from "./routes/users";
 import ClientsRouter from "./routes/clients";
-import propertiesRouter from "./routes/properties";
-import propertyTypesRouter from "./routes/propertyTypes";
-import authRouter from "./routes/auth";
+import PropertiesRouter from "./routes/properties";
+import PropertyTypesRouter from "./routes/propertyTypes";
+import AuthRouter from "./routes/auth";
 
 import { HandlerErrorsMiddleware } from "./middlewares/HandlerErrorsMiddleware";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// config json and cors
 app.use(express.json());
 app.use(cors());
 
 // routes
-app.use("/api", ClientsRouter);
-app.use("/api", propertiesRouter);
+app.use("/api/auth", AuthRouter);
+app.use("/api/users", UsersRouter);
+app.use("/api/clients", ClientsRouter);
+app.use("/api/properties", PropertiesRouter);
+app.use("/api/properties-types", PropertyTypesRouter);
 
-// admins only
-app.use("/api/admin", UsersRouter);
-app.use("/api/admin", propertyTypesRouter);
-
-// auth routes
-app.use("/api/auth", authRouter);
-
+// global errors handler middleware
 app.use(HandlerErrorsMiddleware);
 
 app.listen(PORT, () => console.log(`Server running in ${PORT}`));
