@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="Postgres" />
   <img src="https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white" alt="Prisma" />
   <img src="https://img.shields.io/badge/zod-%233068b7.svg?style=for-the-badge&logo=zod&logoColor=white" alt="Zod" />
-  <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" alt="Postman" />
+  <img src="https://img.shields.io/badge/Insomnia-4000BF.svg?style=for-the-badge&logo=Insomnia&logoColor=white" alt="Insomnia" />
   <img src="https://img.shields.io/badge/NODEMON-%23323330.svg?style=for-the-badge&logo=nodemon&logoColor=%BBDEAD" alt="Nodemon" />
   
 </div>
@@ -18,7 +18,7 @@
 <br />
 
 <div align="center">
-  <a href="#start">Comece por aqui!</a> ◽
+  <a href="#start">Comece por aqui</a> ◽
   <a href="#endpoints">Endpoints da API</a> ◽
   <a href="#architecture">Arquitetura de pastas</a> 
 </div>
@@ -31,10 +31,10 @@
 - **Database:** Postgres
 - **ORM:** Prisma
 - **Validações:** Zod
-- **Documentação/testes:** Postman
+- **Documentação/testes:** Insomnia
 - **Execução/Desenvolvimento:** Nodemon
 
-<h2 id="start">Comece por aqui!</h2>
+<h2 id="start">Comece por aqui</h2>
 
 <h2 id="endpoints">Endpoints da API</h2>
 
