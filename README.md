@@ -18,7 +18,7 @@
 <br />
 
 <div align="center">
-  <a href="#start">Comece por aqui!</a> ◽
+  <a href="#start">Comece por aqui</a> ◽
   <a href="#endpoints">Endpoints da API</a> ◽
   <a href="#architecture">Arquitetura de pastas</a> 
 </div>
@@ -31,10 +31,10 @@
 - **Database:** Postgres
 - **ORM:** Prisma
 - **Validações:** Zod
-- **Documentação/testes:** Postman
+- **Documentação/testes:** Insomnia
 - **Execução/Desenvolvimento:** Nodemon
 
-<h2 id="start">Comece por aqui!</h2>
+<h2 id="start">Comece por aqui</h2>
 
 <h2 id="endpoints">Endpoints da API</h2>
 
