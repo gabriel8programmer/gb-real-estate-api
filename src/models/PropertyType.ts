@@ -1,6 +1,6 @@
 import { PropertyType } from "@prisma/client";
 import { PropertyTypesRepository } from "../types/utils/properties";
-import { prisma } from "../database";
+import { prisma } from "../configs/prisma";
 
 export class PropertyTypes implements PropertyTypesRepository {
   async find(): Promise<PropertyType[]> {

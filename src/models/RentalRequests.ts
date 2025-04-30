@@ -1,6 +1,6 @@
 import { RentalRequest } from "@prisma/client";
 import { CreateRentalRequestParams, RentalRequestsRepository } from "../types/utils/rentalRequests";
-import { prisma } from "../database";
+import { prisma } from "../configs/prisma";
 
 export class RentalRequests implements RentalRequestsRepository {
   async find(): Promise<RentalRequest[]> {

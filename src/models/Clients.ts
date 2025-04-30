@@ -1,24 +1,10 @@
 import { Client } from "@prisma/client";
 import { ClientsRepository, CreateClientParams } from "../types/utils/clients";
-import { prisma } from "../database";
+import { prisma } from "../configs/prisma";
 
 export class Clients implements ClientsRepository {
   async findById(id: number): Promise<Client | null> {
-    return prisma.client.findUnique({
-      where: { id },
-      include: {
-        user: {
-          select: {
-            name: true,
-            email: true,
-            role: true,
-            password: true,
-            emailVerified: true,
-            enabled: true,
-          },
-        },
-      },
-    });
+    return prisma.client.findUnique({ where: { id }, include: { user: true } });
   }
 
   async create(params: CreateClientParams): Promise<Client> {

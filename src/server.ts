@@ -4,11 +4,12 @@ import express from "express";
 import cors from "cors";
 
 // routes
-import UsersRouter from "./routes/users";
+import AuthRouter from "./routes/auth";
+import AdminRouter from "./routes/admin";
+import AgentsRouter from "./routes/agents";
 import ClientsRouter from "./routes/clients";
 import PropertiesRouter from "./routes/properties";
 import PropertyTypesRouter from "./routes/propertyTypes";
-import AuthRouter from "./routes/auth";
 
 import { HandlerErrorsMiddleware } from "./middlewares/HandlerErrorsMiddleware";
 
@@ -21,10 +22,11 @@ app.use(cors());
 
 // routes
 app.use("/api/auth", AuthRouter);
-app.use("/api/users", UsersRouter);
+app.use("/api/admin", AdminRouter);
+app.use("/api/agents", AgentsRouter);
 app.use("/api/clients", ClientsRouter);
 app.use("/api/properties", PropertiesRouter);
-app.use("/api/properties-types", PropertyTypesRouter);
+app.use("/api/property-types", PropertyTypesRouter);
 
 // global errors handler middleware
 app.use(HandlerErrorsMiddleware);

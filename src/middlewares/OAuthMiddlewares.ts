@@ -8,7 +8,7 @@ const CLIENT_ID_GOOGLE = process.env["AUDIENCE"];
 // create google client
 const googleClient = new OAuth2Client();
 
-export class AuthMiddleware {
+export class OAuthMiddleware {
   // generic method for checking google id token
   static google: Handler = async (req, res, next) => {
     try {
@@ -21,19 +21,15 @@ export class AuthMiddleware {
         audience: CLIENT_ID_GOOGLE,
       });
 
-      // get payload
-      const payload = ticket.getPayload();
-      const expiresAt = payload?.exp;
-      const expireDate = new Date((expiresAt as number) * 1000);
-      const now = new Date();
-      // validate expiration token
-      if (expireDate < now) throw new HttpError(401, "Expired token!");
-
       // define data user
+      const payload = ticket.getPayload();
       req.user = payload;
 
       next();
-    } catch (error) {
+    } catch (error: any) {
+      if (typeof error.message === "string" && error.message.includes("Token used too late")) {
+        return next(new HttpError(401, "Expired token!"));
+      }
       next(error);
     }
   };

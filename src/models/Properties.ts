@@ -4,7 +4,7 @@ import {
   PropertiesRepository,
   PropertyWhereParams,
 } from "../types/utils/properties";
-import { prisma } from "../database";
+import { prisma } from "../configs/prisma";
 
 export class Properties implements PropertiesRepository {
   async find(where: PropertyWhereParams): Promise<Property[]> {

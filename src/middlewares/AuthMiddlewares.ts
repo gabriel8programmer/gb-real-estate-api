@@ -47,7 +47,12 @@ export class AuthMiddlewares {
         if (!role) throw new HttpError(404, "User role required!");
 
         if (!allowedRoles.includes(role)) {
-          throw new HttpError(403, "Access denied!");
+          throw new HttpError(
+            403,
+            `Access denied. This action requires one of the following roles: ${allowedRoles.join(
+              ", "
+            )}.`
+          );
         }
 
         next();

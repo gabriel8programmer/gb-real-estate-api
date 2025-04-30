@@ -1,12 +1,19 @@
 import { Router } from "express";
-import { rentalRequestsController } from "../container";
+import { ONLY_ADMINS_AGENTS, rentalRequestsController } from "../container";
+import { AuthMiddlewares } from "../middlewares/AuthMiddlewares";
 
 const router = Router();
 
-router.get("/", rentalRequestsController.index);
-router.get("/:id", rentalRequestsController.show);
-router.post("/", rentalRequestsController.save);
-router.put("/:id", rentalRequestsController.update);
-router.delete("/:id", rentalRequestsController.delete);
+router.get("/:id", AuthMiddlewares.verifyToken, rentalRequestsController.show);
+router.delete("/:id", AuthMiddlewares.verifyToken, rentalRequestsController.delete);
+
+router.get("/", AuthMiddlewares.verifyToken, ONLY_ADMINS_AGENTS, rentalRequestsController.index);
+router.post("/", AuthMiddlewares.verifyToken, ONLY_ADMINS_AGENTS, rentalRequestsController.save);
+router.put(
+  "/:id",
+  AuthMiddlewares.verifyToken,
+  ONLY_ADMINS_AGENTS,
+  rentalRequestsController.update
+);
 
 export default router;

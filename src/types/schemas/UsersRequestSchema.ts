@@ -5,7 +5,7 @@ export const UsersRequestQueryParams = z
     page: z.coerce.number(),
     pageSize: z.coerce.number(),
     name: z.string().min(1, "Name must contain at least one or more characters"),
-    email: z.string().email("Invalid email address!"),
+    email: z.string(),
     role: z.enum(["ADMIN", "AGENT", "CLIENT"]),
     emailVerified: z.coerce.boolean(),
     enabled: z.coerce.boolean(),

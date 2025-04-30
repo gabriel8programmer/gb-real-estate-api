@@ -1,4 +1,4 @@
-import { prisma } from "../database";
+import { prisma } from "../configs/prisma";
 import { HttpError } from "../errors/HttpError";
 import { Properties } from "../models/Properties";
 import { CreatePropertyParams, PropertyWhereParams } from "../types/utils/properties";

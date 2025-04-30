@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { prisma } from "../database";
+import { prisma } from "../configs/prisma";
 import { CreateUserParams, UsersRepository, UserWhereParams } from "../types/utils/users";
 
 export class Users implements UsersRepository {
@@ -49,10 +49,23 @@ export class Users implements UsersRepository {
   }
 
   async count(where: UserWhereParams): Promise<number> {
-    const { name, email, role, emailVerified, enabled } = where;
+    const { name, email, role, emailVerified, enabled, createdAt } = where;
 
     return prisma.user.count({
-      where: { name, email, role, emailVerified, enabled },
+      where: {
+        name: {
+          contains: name,
+          mode: "insensitive",
+        },
+        email: {
+          contains: email,
+          mode: "insensitive",
+        },
+        role,
+        emailVerified,
+        enabled,
+        createdAt,
+      },
     });
   }
 

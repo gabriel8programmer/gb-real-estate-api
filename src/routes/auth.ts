@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { AuthMiddleware as OAuth } from "../middlewares/OAuthMiddlewares";
+import { OAuthMiddleware as OAuth } from "../middlewares/OAuthMiddlewares";
 import { authController } from "../container";
 
 const router = Router();
