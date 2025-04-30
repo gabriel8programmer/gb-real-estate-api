@@ -23,6 +23,7 @@ model User {
   enabled       Boolean   @default(true)
   picture       String?
   client        Client?
+  agent         Agent?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -31,35 +32,48 @@ model Client {
   id             Int             @id @default(autoincrement())
   birthDate      DateTime
   phone          String
-  cpf            String
+  cpf            String          @unique
   rg             String?
-  materialStatus MaterialStatus  @default(Single)
-  gender         Gender          @default(MALE)
-  rentalRequest  RentalRequest[]
-  rental         Rental[]
+  materialStatus MaterialStatus?
+  gender         Gender?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   userId         Int             @unique
-  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rentalRequests RentalRequest[]
+  rentals        Rental[]
+}
+
+model Agent {
+  id             Int             @id @default(autoincrement())
+  license        String          @unique
+  bio            String?
+  phone          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  userId         Int             @unique
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rentals        Rental[]
+  rentalRequests RentalRequest[]
 }
 
 model Property {
-  id             Int            @id @default(autoincrement())
-  title          String         @db.VarChar(255)
+  id             Int             @id @default(autoincrement())
+  title          String          @db.VarChar(255)
   description    String?
   price          Decimal
   size           Decimal?
   bedrooms       Int?
   bathrooms      Int?
-  status         PropertyStatus
+  status         PropertyStatus  @default(Available)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   propertyTypeId Int?
-  propertyType   PropertyType?  @relation(fields: [propertyTypeId], references: [id], onUpdate: Cascade)
-
-  images        PropertyImage[]
-  rentalRequest RentalRequest[]
-  rental        Rental[]
-  location      Location?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  propertyType   PropertyType?   @relation(fields: [propertyTypeId], references: [id], onUpdate: Cascade)
+  location       Location?
+  images         PropertyImage[]
+  rentalRequest  RentalRequest[]
+  rental         Rental[]
 }
 
 model PropertyImage {
@@ -91,35 +105,36 @@ model Location {
 
 model RentalRequest {
   id         Int                 @id @default(autoincrement())
-  clientId   Int
-  propertyId Int
   budget     Decimal
   endDate    DateTime
   status     RentalRequestStatus @default(Pending)
-
-  client   Client   @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+  clientId   Int
+  propertyId Int
+  agentId    Int?
+  client     Client              @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  property   Property            @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  agent      Agent?              @relation(fields: [agentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 }
 
 model Rental {
   id                 Int                  @id @default(autoincrement())
-  clientId           Int
-  propertyId         Int
   startContractDate  DateTime
   endContractDate    DateTime
   contractUrl        String
   status             RentalStatus         @default(Actived)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  clientId           Int
+  agentId            Int
+  propertyId         Int
   client             Client               @relation(fields: [clientId], references: [id])
+  agent              Agent                @relation(fields: [agentId], references: [id])
   property           Property             @relation(fields: [propertyId], references: [id])
   Payment            Payment[]
   maintenanceRequest MaintenanceRequest[]
   maintenanceCost    MaintenanceCost[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Payment {
@@ -128,14 +143,12 @@ model Payment {
   startDate       DateTime
   maturityDate    DateTime
   status          PaymentStatus
-  paymentMethodId Int
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
   rentalId        Int
-
-  paymentMethod PaymentMethod @relation(fields: [paymentMethodId], references: [id])
-  rental        Rental        @relation(fields: [rentalId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  paymentMethodId Int
+  rental          Rental        @relation(fields: [rentalId], references: [id])
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
 }
 
 model PaymentMethod {
@@ -149,25 +162,21 @@ model MaintenanceRequest {
   randomRequestNumber Int
   description         String
   status              MaintenanceRequestStatus
-
-  rentalId        Int
-  rental          Rental            @relation(fields: [rentalId], references: [id])
-  maintenanceCost MaintenanceCost[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  rentalId            Int
+  rental              Rental                   @relation(fields: [rentalId], references: [id])
+  maintenanceCost     MaintenanceCost[]
 }
 
 model MaintenanceCost {
-  id          Int     @id @default(autoincrement())
-  description String
-  value       Decimal
-
+  id                   Int                @id @default(autoincrement())
+  description          String
+  value                Decimal
   maintenanceRequestId Int
   rentalId             Int
-
-  maintenceRequest MaintenanceRequest @relation(fields: [maintenanceRequestId], references: [id])
-  rental           Rental             @relation(fields: [rentalId], references: [id])
+  maintenceRequest     MaintenanceRequest @relation(fields: [maintenanceRequestId], references: [id])
+  rental               Rental             @relation(fields: [rentalId], references: [id])
 }
 
 // enums

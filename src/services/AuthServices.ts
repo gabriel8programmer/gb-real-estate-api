@@ -6,6 +6,7 @@ import {
   AuthResponse,
   AuthRegisterParams,
   AuthLoginParams,
+  AuthUserResponse,
 } from "../types/utils/auth";
 import { Users } from "../models/Users";
 import fs from "node:fs";
@@ -41,7 +42,7 @@ export class AuthServices {
   };
 
   // common register with email and password
-  async registerUser(params: AuthRegisterParams) {
+  async registerUser(params: AuthRegisterParams): Promise<AuthUserResponse> {
     // destructuring
     const { email, password } = params;
 
@@ -52,7 +53,9 @@ export class AuthServices {
     const userExists = await this.usersModel.findByEmail(email);
     if (userExists) throw new HttpError(401, "User email address already in use!");
 
-    const newUser = await this.usersModel.create(params);
+    // create user and return
+    const newUser: AuthUserResponse = await this.usersModel.create(params);
+    return newUser;
   }
 
   // common login with email and password

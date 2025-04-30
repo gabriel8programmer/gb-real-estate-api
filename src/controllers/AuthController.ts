@@ -14,11 +14,12 @@ export class AuthController {
       const body = RegisterRequestSchema.parse(req.body);
 
       // register user and return response
-      await this.authServices.registerUser(body);
+      const user = await this.authServices.registerUser(body);
 
       res.status(201).json({
         message: "User registered successfuly",
-        info: "A verification email has been sent. Please check your email or spam folder to be able to use our platform.",
+        info: "Your email is not verified. Email verification is required to log in.",
+        user,
       });
     } catch (error) {
       next(error);
