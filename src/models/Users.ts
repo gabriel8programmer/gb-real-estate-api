@@ -1,39 +1,20 @@
 import { User } from "@prisma/client";
 import { prisma } from "../configs/prisma";
-import { CreateUserParams, UsersRepository, UserWhereParams } from "../types/utils/users";
+import {
+  CreateUserParams,
+  FindUserParams,
+  UsersRepository,
+  UserWhereParams,
+} from "../types/utils/users";
 
 export class Users implements UsersRepository {
-  async find(where: UserWhereParams): Promise<User[]> {
-    const {
-      page = 1,
-      pageSize = 10,
-      name,
-      email,
-      role,
-      emailVerified,
-      enabled,
-      createdAt,
-      order = "asc",
-      orderBy = "name",
-    } = where;
+  async find(params: FindUserParams): Promise<User[]> {
+    const { page = 1, pageSize = 10, where, order = "asc", orderBy = "name" } = params;
 
     const limit = (page - 1) * pageSize;
 
     return prisma.user.findMany({
-      where: {
-        name: {
-          contains: name,
-          mode: "insensitive",
-        },
-        email: {
-          contains: email,
-          mode: "insensitive",
-        },
-        role,
-        emailVerified,
-        enabled,
-        createdAt,
-      },
+      where,
       take: pageSize,
       skip: limit,
       orderBy: { [orderBy]: order },
@@ -49,24 +30,7 @@ export class Users implements UsersRepository {
   }
 
   async count(where: UserWhereParams): Promise<number> {
-    const { name, email, role, emailVerified, enabled, createdAt } = where;
-
-    return prisma.user.count({
-      where: {
-        name: {
-          contains: name,
-          mode: "insensitive",
-        },
-        email: {
-          contains: email,
-          mode: "insensitive",
-        },
-        role,
-        emailVerified,
-        enabled,
-        createdAt,
-      },
-    });
+    return prisma.user.count({ where });
   }
 
   async create(params: CreateUserParams): Promise<User> {

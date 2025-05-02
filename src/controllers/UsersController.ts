@@ -13,6 +13,7 @@ export class UsersController {
     try {
       const query = UsersRequestQueryParams.parse(req.query);
       const result = await this.userServices.getUsersPaginated(query);
+
       res.json(result);
     } catch (error) {
       next(error);

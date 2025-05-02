@@ -10,10 +10,22 @@ export interface CreateRentalRequestParams {
   status: RentalRequestStatus;
 }
 
+export interface RentalRequestWhereParams {
+  page?: number;
+  pageSize?: number;
+  createdAt?: Date;
+  status?: RentalRequestStatus;
+  propertyId?: number;
+  clientId?: number;
+  orderBy?: "createdAt" | "id" | "endDate";
+  order?: "asc" | "desc";
+}
+
 export interface RentalRequestsRepository {
-  find: () => Promise<RentalRequest[]>;
+  find: (where: RentalRequestWhereParams) => Promise<RentalRequest[]>;
   findById: (id: number) => Promise<RentalRequest | null>;
   create: (params: CreateRentalRequestParams) => Promise<RentalRequest>;
+  count: (where: RentalRequestWhereParams) => Promise<number>;
   updateById: (
     id: number,
     params: Partial<Pick<CreateRentalRequestParams, "status" | "endDate">>

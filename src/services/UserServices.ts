@@ -1,17 +1,51 @@
-import { CreateUserParams } from "../types/utils/users";
+import { CreateUserParams, FindUserParams, UserRole } from "../types/utils/users";
 import { Users } from "../models/Users";
 import { UserWhereParams } from "../types/utils/users";
 import bcrypt from "bcrypt";
 import { HttpError } from "../errors/HttpError";
+import { PaginationParams } from "../types/utils";
+
+interface QueryParams extends PaginationParams {
+  name?: string;
+  email?: string;
+  role?: UserRole;
+  emailVerified?: boolean;
+  enabled?: boolean;
+  orderBy?: "createdAt" | "name" | "email";
+}
 
 export class UserServices {
   constructor(private readonly usersModel: Users) {}
 
-  async getUsersPaginated(params: UserWhereParams) {
-    const { page = 1, pageSize = 10 } = params;
+  async getUsersPaginated(params: QueryParams) {
+    const {
+      page = 1,
+      pageSize = 10,
+      name,
+      email,
+      role,
+      emailVerified,
+      enabled,
+      order,
+      orderBy,
+    } = params;
 
-    const users = await this.usersModel.find(params);
-    const total = await this.usersModel.count(params);
+    const userParams: FindUserParams = {
+      where: {
+        name: { contains: name, mode: "insensitive" },
+        email: { contains: email, mode: "insensitive" },
+        role,
+        emailVerified,
+        enabled,
+      },
+      page,
+      pageSize,
+      orderBy,
+      order,
+    };
+
+    const users = await this.usersModel.find(userParams);
+    const total = await this.usersModel.count(userParams.where);
 
     return {
       data: users,

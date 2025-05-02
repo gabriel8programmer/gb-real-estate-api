@@ -10,6 +10,7 @@ import AgentsRouter from "./routes/agents";
 import ClientsRouter from "./routes/clients";
 import PropertiesRouter from "./routes/properties";
 import PropertyTypesRouter from "./routes/propertyTypes";
+import RentalRequestsRouter from "./routes/rentalRequests";
 
 import { HandlerErrorsMiddleware } from "./middlewares/HandlerErrorsMiddleware";
 
@@ -27,6 +28,7 @@ app.use("/api/agents", AgentsRouter);
 app.use("/api/clients", ClientsRouter);
 app.use("/api/properties", PropertiesRouter);
 app.use("/api/property-types", PropertyTypesRouter);
+app.use("/api/rental-requests", RentalRequestsRouter);
 
 // global errors handler middleware
 app.use(HandlerErrorsMiddleware);

@@ -1,4 +1,5 @@
 import { Property } from "@prisma/client";
+import { PaginationParams } from ".";
 
 // property types
 export interface PropertyTypesRepository {
@@ -27,17 +28,14 @@ export interface PropertyLocation {
   };
 }
 
-export interface PropertyWhereParams {
-  page?: number;
-  pageSize?: number;
+export interface PropertyWhereParams extends PaginationParams {
   type?: string;
   price?: {
     min?: number;
     max?: number;
   };
-  //   location?: PropertyLocation;
   orderBy?: "type" | "price" | "createdAt";
-  order?: "asc" | "desc";
+  //   location?: PropertyLocation;
 }
 
 export interface CreatePropertyParams {
@@ -47,7 +45,7 @@ export interface CreatePropertyParams {
   size?: number;
   bedrooms?: number;
   bathrooms?: number;
-  status: "Available" | "Rented" | "Under_maintenance";
+  status?: "Available" | "Rented" | "Under_maintenance";
   propertyTypeId?: number;
   // location
   location?: PropertyLocation;

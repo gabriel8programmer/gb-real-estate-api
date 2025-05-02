@@ -23,7 +23,7 @@ export const CreatePropertiesRequestSchema = z.object({
   size: z.number().optional(),
   bedrooms: z.number().optional(),
   bathrooms: z.number().optional(),
-  status: z.enum(["Available", "Rented", "Under_maintenance"]),
+  status: z.enum(["Available", "Rented", "Under_maintenance"]).optional(),
   propertyTypeId: z.number().optional(),
   location: LocationSchema.optional(),
 });
